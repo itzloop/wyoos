@@ -1,7 +1,7 @@
 CC = g++
 GPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 ASPARAMS = --32
-OBJS = loader.o gdt.o kernel.o
+OBJS = loader.o gdt.o port.o kernel.o
 
 %.o: %.cpp
 	$(CC) $(GPPPARAMS) -o $@ -c $<
@@ -38,4 +38,4 @@ run: mykernel.iso
 
 .PHONY: clean
 clean:
-	rm *.o
+	rm -f $(OBJS) mykernel.bin mykernel.iso
