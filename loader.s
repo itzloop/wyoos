@@ -8,11 +8,13 @@
     .long CHECKSUM
 
 .section .text
+.extern call_constructors
 .extern kernelMain
 .global loader
 
 loader:
     mov $kernel_stack, %esp
+    call call_constructors
     push %eax
     push %ebx
     call kernelMain
