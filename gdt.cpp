@@ -1,12 +1,13 @@
 #include "gdt.h"
 
-GDT::GDT() : nullSegmentSelector(0, 0, 0),
-             unusedSegmentSelector(0, 0, 0),
-             codeSegmentSelector(0, 64 * 1024 * 1024, 0x9A),
-             dataSegmentSelector(0, 64 * 1024 * 1024, 0x92)
+GDT::GDT()
+    : nullSegmentSelector(0, 0, 0),
+      unusedSegmentSelector(0, 0, 0),
+      codeSegmentSelector(0, 64 * 1024 * 1024, 0x9A),
+      dataSegmentSelector(0, 64 * 1024 * 1024, 0x92)
 {
     uint32_t i[2];
-    i[0] = (uint32_t)this;
+    i[1] = (uint32_t)this;
     i[0] = sizeof(GDT) << 16; // didn't realy understand this part
 
     // load the global descriptor to the global descriptor table register (GDTR)
@@ -43,21 +44,24 @@ GDT::SegmentDescriptor::SegmentDescriptor(uint32_t base,
         if ((limit & 0xFFF) != 0xFFF)
             limit = (limit >> 12) - 1;
         else
-            limit = (limit >> 12);
+            limit = limit >> 12;
         // C is 1100 and corresponds to flags Gr-Sz-0-0
         // Gr: Granularity bit. If 0 byte granularity and if 1 page granularity.
         // Sz: Size bit. If 1 it defines 32 bit protected mode. You can have both 16 bit and 32 bit selectors at once.
         target[6] = 0xC0;
     }
-
+    // limit
     target[0] = limit & 0xFF;
-    target[1] = (limit)&0xFF;
+    target[1] = (limit >> 8) & 0xFF;
     target[6] |= (limit >> 16) & 0xF;
+
+    // base
     target[2] = base & 0xFF;
     target[3] = (base >> 8) & 0xFF;
     target[4] = (base >> 16) & 0xFF;
     target[7] = (base >> 24) & 0xFF;
 
+    // access type
     target[5] = type;
 }
 

@@ -13,7 +13,7 @@ protected:
 class Port8 : public Port
 {
 public:
-    Port8(uint8_t port);
+    Port8(uint16_t port);
     ~Port8();
     virtual void write(uint8_t data);
     virtual uint8_t read(uint8_t data);
@@ -21,7 +21,7 @@ public:
 class Port8Slow : public Port8
 {
 public:
-    Port8Slow(uint8_t port);
+    Port8Slow(uint16_t port);
     ~Port8Slow();
     virtual void write(uint8_t data);
 };
@@ -36,7 +36,7 @@ public:
 class Port32 : public Port
 {
 public:
-    Port32(uint32_t port);
+    Port32(uint16_t port);
     ~Port32();
     virtual void write(uint32_t data);
     virtual uint32_t read(uint32_t data);

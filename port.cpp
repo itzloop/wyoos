@@ -8,7 +8,7 @@ Port::Port(uint16_t port)
 Port::~Port() {}
 
 // 8 bit port implemetation
-Port8::Port8(uint8_t port) : Port(port) {}
+Port8::Port8(uint16_t port) : Port(port) {}
 Port8::~Port8() {}
 void Port8::write(uint8_t data)
 {
@@ -26,7 +26,7 @@ uint8_t Port8::read(uint8_t data)
 }
 
 // 8 bit slow port implemetation
-Port8Slow::Port8Slow(uint8_t port) : Port8(port) {}
+Port8Slow::Port8Slow(uint16_t port) : Port8(port) {}
 Port8Slow::~Port8Slow() {}
 void Port8Slow::write(uint8_t data)
 {
@@ -55,7 +55,7 @@ uint16_t Port16::read(uint16_t data)
 }
 
 // 32 bit port implemetation
-Port32::Port32(uint32_t port) : Port(port) {}
+Port32::Port32(uint16_t port) : Port(port) {}
 Port32::~Port32() {}
 void Port32::write(uint32_t data)
 {
