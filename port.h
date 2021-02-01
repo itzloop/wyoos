@@ -16,7 +16,7 @@ public:
     Port8(uint16_t port);
     ~Port8();
     virtual void write(uint8_t data);
-    virtual uint8_t read(uint8_t data);
+    virtual uint8_t read();
 };
 class Port8Slow : public Port8
 {
@@ -31,7 +31,7 @@ public:
     Port16(uint16_t port);
     ~Port16();
     virtual void write(uint16_t data);
-    virtual uint16_t read(uint16_t data);
+    virtual uint16_t read();
 };
 class Port32 : public Port
 {
@@ -39,5 +39,5 @@ public:
     Port32(uint16_t port);
     ~Port32();
     virtual void write(uint32_t data);
-    virtual uint32_t read(uint32_t data);
+    virtual uint32_t read();
 };

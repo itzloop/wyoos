@@ -16,7 +16,7 @@ void Port8::write(uint8_t data)
                      :
                      : "a"(data), "Nd"(port));
 }
-uint8_t Port8::read(uint8_t data)
+uint8_t Port8::read()
 {
     uint8_t result;
     __asm__ volatile("inb %1, %0"
@@ -45,7 +45,7 @@ void Port16::write(uint16_t data)
                      :
                      : "a"(data), "Nd"(port));
 }
-uint16_t Port16::read(uint16_t data)
+uint16_t Port16::read()
 {
     uint16_t result;
     __asm__ volatile("inw %1, %0"
@@ -63,7 +63,7 @@ void Port32::write(uint32_t data)
                      :
                      : "a"(data), "Nd"(port));
 }
-uint32_t Port32::read(uint32_t data)
+uint32_t Port32::read()
 {
     uint32_t result;
     __asm__ volatile("inl %1, %0"
