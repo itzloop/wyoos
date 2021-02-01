@@ -1,7 +1,7 @@
 CC = g++
 GPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -Wno-write-strings
 ASPARAMS = --32
-OBJS = loader.o gdt.o interruptstubs.o interrupts.o port.o keyboard.o kernel.o
+OBJS = loader.o gdt.o interruptstubs.o interrupts.o port.o keyboard.o mouse.o kernel.o
 
 %.o: %.cpp
 	$(CC) $(GPPPARAMS) -o $@ -c $<

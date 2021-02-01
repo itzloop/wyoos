@@ -2,6 +2,7 @@
 #include "gdt.h"
 #include "interrupts.h"
 #include "keyboard.h"
+#include "mouse.h"
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
@@ -77,6 +78,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     // instantiate the interrupt descriptor table
     InterruptManager interrupts(&gdt);
     KeyboardDriver kbd(&interrupts);
+    MouseDriver md(&interrupts);
     interrupts.activate();
 
     while (1)
