@@ -151,7 +151,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     driverManager.addDriver(&md);
 
     PICController controller;
-    controller.selectDrivers(&driverManager);
+    controller.selectDrivers(&driverManager, &interrupts);
 
     driverManager.activateAll();
     interrupts.activate();

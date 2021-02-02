@@ -9,6 +9,22 @@ namespace myos
 {
     namespace hardwarecoms
     {
+
+        enum BaseAddressRegisterType
+        {
+            MemoryMapping = 0,
+            InputOutput = 1
+        };
+
+        class BaseAddressRegister
+        {
+        public:
+            bool prefetchable; // 4th bit used for memory mapping
+            myos::common::uint8_t *address;
+            myos::common::uint32_t size;
+            BaseAddressRegisterType type;
+        };
+
         class PCIDeviceDescriptor
         {
         public:
@@ -58,12 +74,22 @@ namespace myos
                 myos::common::uint16_t bus,
                 myos::common::uint16_t device);
 
-            void selectDrivers(myos::drivers::DriverManager *driverManager);
-
+            void selectDrivers(
+                myos::drivers::DriverManager *driverManager,
+                myos::hardwarecoms::InterruptManager *manager);
+            myos::drivers::Driver *getDriver(
+                PCIDeviceDescriptor dev,
+                myos::hardwarecoms::InterruptManager *interrupts);
             PCIDeviceDescriptor getDeviceDescriptor(
                 myos::common::uint16_t bus,
                 myos::common::uint16_t device,
                 myos::common::uint16_t function);
+
+            BaseAddressRegister getBaseAddressRegister(
+                myos::common::uint16_t bus,
+                myos::common::uint16_t device,
+                myos::common::uint16_t function,
+                myos::common::uint16_t bar);
         };
     } // namespace hardwarecoms
 } // namespace myos
