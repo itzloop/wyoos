@@ -5,6 +5,7 @@
 #include <hardwarecom/pci.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
+#include <drivers/vga.h>
 
 using namespace myos;
 using namespace myos::common;
@@ -146,6 +147,7 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     KeyboardDriver kbd(&interrupts, &handler);
     MouseToConsole mouseHandler;
     MouseDriver md(&interrupts, &mouseHandler);
+    VGA vga;
 
     driverManager.addDriver(&kbd);
     driverManager.addDriver(&md);
@@ -155,6 +157,11 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 
     driverManager.activateAll();
     interrupts.activate();
+
+    vga.SetMode(320, 200, 8);
+    for (int32_t y = 0; y < 200; y++)
+        for (int32_t x = 0; x < 320; x++)
+            vga.PutPixel(x, y, 0x00, 0x00, 0xA8);
 
     while (1)
         ;

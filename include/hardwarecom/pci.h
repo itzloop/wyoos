@@ -20,29 +20,29 @@ namespace myos
         {
         public:
             bool prefetchable; // 4th bit used for memory mapping
-            myos::common::uint8_t *address;
-            myos::common::uint32_t size;
+            common::uint8_t *address;
+            common::uint32_t size;
             BaseAddressRegisterType type;
         };
 
         class PCIDeviceDescriptor
         {
         public:
-            myos::common::uint32_t portBase;
-            myos::common::uint32_t interrupt;
+            common::uint32_t portBase;
+            common::uint32_t interrupt;
 
-            myos::common::uint16_t bus;
-            myos::common::uint16_t device;
-            myos::common::uint16_t function;
+            common::uint16_t bus;
+            common::uint16_t device;
+            common::uint16_t function;
 
-            myos::common::uint16_t vendor_id;
-            myos::common::uint16_t device_id;
+            common::uint16_t vendor_id;
+            common::uint16_t device_id;
 
-            myos::common::uint8_t class_id;
-            myos::common::uint8_t subclass_id;
-            myos::common::uint8_t interface_id;
+            common::uint8_t class_id;
+            common::uint8_t subclass_id;
+            common::uint8_t interface_id;
 
-            myos::common::uint8_t revision;
+            common::uint8_t revision;
 
             PCIDeviceDescriptor();
             ~PCIDeviceDescriptor();
@@ -57,39 +57,39 @@ namespace myos
             PICController();
             ~PICController();
 
-            myos::common::uint32_t read(
-                myos::common::uint16_t bus,
-                myos::common::uint16_t device,
-                myos::common::uint16_t function,
-                myos::common::uint32_t registeroffset);
+            common::uint32_t read(
+                common::uint16_t bus,
+                common::uint16_t device,
+                common::uint16_t function,
+                common::uint32_t registeroffset);
 
             void write(
-                myos::common::uint16_t bus,
-                myos::common::uint16_t device,
-                myos::common::uint16_t function,
-                myos::common::uint32_t registeroffset,
-                myos::common::uint32_t value);
+                common::uint16_t bus,
+                common::uint16_t device,
+                common::uint16_t function,
+                common::uint32_t registeroffset,
+                common::uint32_t value);
 
             bool deviceHasFunctions(
-                myos::common::uint16_t bus,
-                myos::common::uint16_t device);
+                common::uint16_t bus,
+                common::uint16_t device);
 
             void selectDrivers(
-                myos::drivers::DriverManager *driverManager,
-                myos::hardwarecoms::InterruptManager *manager);
-            myos::drivers::Driver *getDriver(
+                drivers::DriverManager *driverManager,
+                InterruptManager *manager);
+            drivers::Driver *getDriver(
                 PCIDeviceDescriptor dev,
-                myos::hardwarecoms::InterruptManager *interrupts);
+                InterruptManager *interrupts);
             PCIDeviceDescriptor getDeviceDescriptor(
-                myos::common::uint16_t bus,
-                myos::common::uint16_t device,
-                myos::common::uint16_t function);
+                common::uint16_t bus,
+                common::uint16_t device,
+                common::uint16_t function);
 
             BaseAddressRegister getBaseAddressRegister(
-                myos::common::uint16_t bus,
-                myos::common::uint16_t device,
-                myos::common::uint16_t function,
-                myos::common::uint16_t bar);
+                common::uint16_t bus,
+                common::uint16_t device,
+                common::uint16_t function,
+                common::uint16_t bar);
         };
     } // namespace hardwarecoms
 } // namespace myos

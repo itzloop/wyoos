@@ -10,30 +10,30 @@ namespace myos
     {
         class MouseEventHandler
         {
-            myos::common::int8_t x, y;
+            common::int8_t x, y;
 
         public:
             MouseEventHandler();
 
             virtual void onActivate();
-            virtual void onMouseDown(myos::common::uint8_t button);
-            virtual void onMouseUp(myos::common::uint8_t button);
+            virtual void onMouseDown(common::uint8_t button);
+            virtual void onMouseUp(common::uint8_t button);
             virtual void onMouseMove(int x, int y);
         };
 
-        class MouseDriver : public myos::hardwarecoms::InterruptHandler, public Driver
+        class MouseDriver : public hardwarecoms::InterruptHandler, public Driver
         {
-            myos::common::uint8_t offset;
-            myos::common::uint8_t buffer[3];
-            myos::common::uint8_t buttons;
-            myos::hardwarecoms::Port8 dataport;
-            myos::hardwarecoms::Port8 commandport;
+            common::uint8_t offset;
+            common::uint8_t buffer[3];
+            common::uint8_t buttons;
+            hardwarecoms::Port8 dataport;
+            hardwarecoms::Port8 commandport;
             MouseEventHandler *handler;
 
         public:
-            MouseDriver(myos::hardwarecoms::InterruptManager *manager, MouseEventHandler *handler);
+            MouseDriver(hardwarecoms::InterruptManager *manager, MouseEventHandler *handler);
             ~MouseDriver();
-            virtual myos::common::uint32_t handle(myos::common::uint32_t esp);
+            virtual common::uint32_t handle(common::uint32_t esp);
             virtual void activate();
         };
     } // namespace drivers
