@@ -2,6 +2,7 @@
 #include <gdt.h>
 #include <drivers/driver.h>
 #include <hardwarecom/interrupts.h>
+#include <hardwarecom/pci.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
 
@@ -149,8 +150,10 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     driverManager.addDriver(&kbd);
     driverManager.addDriver(&md);
 
-    driverManager.activateAll();
+    PICController controller;
+    controller.selectDrivers(&driverManager);
 
+    driverManager.activateAll();
     interrupts.activate();
 
     while (1)
