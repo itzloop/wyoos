@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gdt.h"
+#include "driver.h"
 #include "interrupts.h"
 #include "keyboard.h"
 #include "mouse.h"
@@ -44,6 +45,15 @@ void printf(char *str)
     }
 }
 
+void printHex(uint8_t n)
+{
+    char *foo = "0x00";
+    char *hex = "0123456789ABCDEF";
+    foo[2] = hex[(n >> 4) & 0x0F];
+    foo[3] = hex[n & 0x0F];
+    printf(foo);
+}
+
 void printAddr(void *ptr)
 {
     char *foo = "0x00000000\n";
@@ -58,6 +68,54 @@ void printAddr(void *ptr)
     foo[9] = hex[((uint32_t)ptr) & 0x0000000F];
     printf(foo);
 }
+
+class PrintfKeyboardEventHandler : public KeyboardEventHandler
+{
+public:
+    void onKeyDown(char c)
+    {
+        char *foo = " ";
+        foo[0] = c;
+        printf(foo);
+    }
+};
+
+class MouseToConsole : public MouseEventHandler
+{
+    int8_t x, y;
+
+public:
+    MouseToConsole()
+    {
+    }
+
+    virtual void onActivate()
+    {
+        uint16_t *VideoMemory = (uint16_t *)0xb8000;
+        x = 40;
+        y = 12;
+        VideoMemory[80 * y + x] = (VideoMemory[80 * y + x] & 0x0F00) << 4 | (VideoMemory[80 * y + x] & 0xF000) >> 4 | (VideoMemory[80 * y + x] & 0x00FF);
+    }
+
+    virtual void onMouseMove(int xoffset, int yoffset)
+    {
+        static uint16_t *VideoMemory = (uint16_t *)0xb8000;
+        VideoMemory[80 * y + x] = (VideoMemory[80 * y + x] & 0x0F00) << 4 | (VideoMemory[80 * y + x] & 0xF000) >> 4 | (VideoMemory[80 * y + x] & 0x00FF);
+
+        x += xoffset;
+        if (x >= 80)
+            x = 79;
+        if (x < 0)
+            x = 0;
+        y += yoffset;
+        if (y >= 25)
+            y = 24;
+        if (y < 0)
+            y = 0;
+
+        VideoMemory[80 * y + x] = (VideoMemory[80 * y + x] & 0x0F00) << 4 | (VideoMemory[80 * y + x] & 0xF000) >> 4 | (VideoMemory[80 * y + x] & 0x00FF);
+    }
+};
 
 typedef void (*ctor)();
 
@@ -77,8 +135,17 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     GDT gdt;
     // instantiate the interrupt descriptor table
     InterruptManager interrupts(&gdt);
-    KeyboardDriver kbd(&interrupts);
-    MouseDriver md(&interrupts);
+    DriverManager driverManager;
+    PrintfKeyboardEventHandler handler;
+    KeyboardDriver kbd(&interrupts, &handler);
+    MouseToConsole mouseHandler;
+    MouseDriver md(&interrupts, &mouseHandler);
+
+    driverManager.addDriver(&kbd);
+    driverManager.addDriver(&md);
+
+    driverManager.activateAll();
+
     interrupts.activate();
 
     while (1)

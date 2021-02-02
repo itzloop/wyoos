@@ -2,6 +2,7 @@
 
 void printf(char *str);
 void printAddr(void *ptr);
+void printHex(uint8_t n);
 
 InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256];
 
@@ -99,11 +100,8 @@ uint32_t InterruptManager::doHandleInterrupt(uint8_t int_num, uint32_t esp)
     }
     else if (int_num != 0x20)
     {
-        char *foo = "UNHANDLED INTERRUPT 0x00";
-        char *hex = "0123456789ABCDEF";
-        foo[22] = hex[(int_num >> 4) & 0x0F];
-        foo[23] = hex[int_num & 0x0F];
-        printf(foo);
+        printf("UNHANDLED INTERRUPT 0x");
+        printHex(int_num);
     }
 
     if (0x20 <= int_num && int_num < 0x30)
@@ -117,11 +115,6 @@ uint32_t InterruptManager::doHandleInterrupt(uint8_t int_num, uint32_t esp)
 
 InterruptHandler::InterruptHandler(uint8_t interruptNumber, InterruptManager *manager)
 {
-    char *foo = "Setting Interrupt 0x00";
-    char *hex = "0123456789ABCDEF";
-    foo[20] = hex[(interruptNumber >> 4) & 0x0F];
-    foo[21] = hex[interruptNumber & 0x0F];
-    printf(foo);
     this->intteruptNumber = intteruptNumber;
     this->interruptManager = manager;
     manager->handlers[interruptNumber] = this;
