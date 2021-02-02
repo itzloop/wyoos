@@ -1,4 +1,7 @@
-#include "port.h"
+#include <hardwarecom/port.h>
+
+using namespace myos::hardwarecoms;
+using namespace myos::common;
 
 // port base class
 Port::Port(uint16_t port)

@@ -1,4 +1,7 @@
-#include "interrupts.h"
+#include <hardwarecom/interrupts.h>
+
+using namespace myos::hardwarecoms;
+using namespace myos::common;
 
 void printf(char *str);
 void printAddr(void *ptr);

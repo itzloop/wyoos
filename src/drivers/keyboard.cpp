@@ -1,4 +1,9 @@
-#include "keyboard.h"
+#include <drivers/keyboard.h>
+
+using namespace myos::hardwarecoms;
+using namespace myos::drivers;
+using namespace myos::common;
+
 void printf(char *);
 void printHex(uint8_t);
 KeyboardEventHandler::KeyboardEventHandler()

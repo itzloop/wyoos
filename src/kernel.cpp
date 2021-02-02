@@ -1,9 +1,14 @@
-#include "types.h"
-#include "gdt.h"
-#include "driver.h"
-#include "interrupts.h"
-#include "keyboard.h"
-#include "mouse.h"
+#include <common/types.h>
+#include <gdt.h>
+#include <drivers/driver.h>
+#include <hardwarecom/interrupts.h>
+#include <drivers/keyboard.h>
+#include <drivers/mouse.h>
+
+using namespace myos;
+using namespace myos::common;
+using namespace myos::drivers;
+using namespace myos::hardwarecoms;
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25

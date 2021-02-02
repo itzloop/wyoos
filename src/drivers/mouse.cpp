@@ -1,4 +1,9 @@
-#include "mouse.h"
+#include <drivers/mouse.h>
+
+using namespace myos::drivers;
+using namespace myos::hardwarecoms;
+using namespace myos::common;
+
 void printf(char *);
 
 MouseDriver::MouseDriver(InterruptManager *manager, MouseEventHandler *handler)
