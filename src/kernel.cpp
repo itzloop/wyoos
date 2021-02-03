@@ -6,14 +6,19 @@
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
 #include <drivers/vga.h>
+#include <gui/desktop.h>
+#include <gui/window.h>
 
 using namespace myos;
 using namespace myos::common;
+using namespace myos::gui;
 using namespace myos::drivers;
 using namespace myos::hardwarecoms;
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
+
+#define GRAPHICSMODE
 
 void printf(char *str)
 {
@@ -143,26 +148,37 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     // instantiate the interrupt descriptor table
     InterruptManager interrupts(&gdt);
     DriverManager driverManager;
+    Desktop desktop(320, 200, 0x00, 0x00, 0xA8);
+#ifdef GRAPHICSMODE
+    KeyboardDriver kbd(&interrupts, &desktop);
+    MouseDriver md(&interrupts, &desktop);
+#else
     PrintfKeyboardEventHandler handler;
     KeyboardDriver kbd(&interrupts, &handler);
     MouseToConsole mouseHandler;
     MouseDriver md(&interrupts, &mouseHandler);
-    VGA vga;
+#endif
 
     driverManager.addDriver(&kbd);
     driverManager.addDriver(&md);
-
     PICController controller;
     controller.selectDrivers(&driverManager, &interrupts);
-
     driverManager.activateAll();
+
+#ifdef GRAPHICSMODE
+    VGA vga;
+    vga.setMode(320, 200, 8);
+    Window win1(&desktop, 10, 10, 20, 20, 0xA8, 0x00, 0x00);
+    Window win2(&desktop, 100, 120, 30, 20, 0x00, 0xA8, 0x00);
+    desktop.addChild(&win1);
+    desktop.addChild(&win2);
+#endif
     interrupts.activate();
-
-    vga.SetMode(320, 200, 8);
-    for (int32_t y = 0; y < 200; y++)
-        for (int32_t x = 0; x < 320; x++)
-            vga.PutPixel(x, y, 0x00, 0x00, 0xA8);
-
+    // vga.fillRectangle(0, 0, 320, 200, 0x00, 0x00, 0xA8);
     while (1)
+#ifdef GRAPHICSMODE
+        desktop.draw(&vga);
+#else
         ;
+#endif
 }

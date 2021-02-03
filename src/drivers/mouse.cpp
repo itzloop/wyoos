@@ -63,7 +63,19 @@ uint32_t MouseDriver::handle(uint32_t esp)
 
     if (offset == 0)
     {
-        handler->onMouseMove(buffer[1], -buffer[2]);
+        handler->onMouseMove((int8_t)buffer[1], -((int8_t)buffer[2]));
+        for (uint8_t i = 0; i < 3; i++)
+        {
+            if ((buffer[0] & (0x1 << i)) != (buttons & (0x1 << i)))
+            {
+                if (buttons & (0x1 << i))
+                    handler->onMouseUp(i + 1);
+                else
+                    handler->onMouseDown(i + 1);
+            }
+        }
+        buttons = buffer[0];
     }
+
     return esp;
 }

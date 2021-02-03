@@ -1,4 +1,5 @@
 
+#pragma once
 #include <common/types.h>
 #include <hardwarecom/port.h>
 #include <drivers/driver.h>
@@ -28,7 +29,7 @@ namespace myos
             void writeRegisters(common::uint8_t *registers);
             common::uint8_t *getFrameBufferSegment();
 
-            virtual common::uint8_t GetColorIndex(
+            virtual common::uint8_t getColorIndex(
                 common::uint8_t r,
                 common::uint8_t g,
                 common::uint8_t b);
@@ -37,27 +38,35 @@ namespace myos
             VGA();
             ~VGA();
 
-            virtual bool SupportsMode(
+            virtual bool supportsMode(
                 common::uint32_t width,
                 common::uint32_t height,
                 common::uint32_t colordepth);
 
-            virtual bool SetMode(
+            virtual bool setMode(
                 common::uint32_t width,
                 common::uint32_t height,
                 common::uint32_t colordepth);
 
-            virtual void PutPixel(
-                common::uint32_t x,
-                common::uint32_t y,
+            virtual void putPixel(
+                common::int32_t x,
+                common::int32_t y,
                 common::uint8_t r,
                 common::uint8_t g,
                 common::uint8_t b);
 
-            virtual void PutPixel(
+            virtual void putPixel(
+                common::int32_t x,
+                common::int32_t y,
+                common::uint8_t colorIndex);
+            virtual void fillRectangle(
                 common::uint32_t x,
                 common::uint32_t y,
-                common::uint8_t colorIndex);
+                common::uint32_t w,
+                common::uint32_t h,
+                common::uint8_t r,
+                common::uint8_t g,
+                common::uint8_t b);
         };
     } // namespace drivers
 } // namespace myos

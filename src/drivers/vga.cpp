@@ -68,14 +68,14 @@ void VGA::writeRegisters(uint8_t *registers)
     attributeControllerIndexPort.write(0x20);
 }
 
-bool VGA::SupportsMode(uint32_t width, uint32_t height, uint32_t colordepth)
+bool VGA::supportsMode(uint32_t width, uint32_t height, uint32_t colordepth)
 {
     return width == 320 && height == 200 && colordepth == 8;
 }
 
-bool VGA::SetMode(uint32_t width, uint32_t height, uint32_t colordepth)
+bool VGA::setMode(uint32_t width, uint32_t height, uint32_t colordepth)
 {
-    if (!SupportsMode(width, height, colordepth))
+    if (!supportsMode(width, height, colordepth))
         return false;
 
     unsigned char g_320x200x256[] =
@@ -119,20 +119,33 @@ uint8_t *VGA::getFrameBufferSegment()
     }
 }
 
-void VGA::PutPixel(uint32_t x, uint32_t y, uint8_t colorIndex)
+void VGA::putPixel(int32_t x, int32_t y, uint8_t colorIndex)
 {
+    if(x < 0 || 320 <= x
+        || y < 0 || 200 <= y) return;
+
     uint8_t *pixelAddress = getFrameBufferSegment() + 320 * y + x;
     *pixelAddress = colorIndex;
 }
 
-uint8_t VGA::GetColorIndex(uint8_t r, uint8_t g, uint8_t b)
+uint8_t VGA::getColorIndex(uint8_t r, uint8_t g, uint8_t b)
 {
-    if (r == 0x00, g == 0x00, b == 0xA8)
-        return 0x01;
+    if (r == 0x00 && g == 0x00 && b == 0x00) return 0x00; // black
+    if (r == 0x00 && g == 0x00 && b == 0xA8) return 0x01; // blue
+    if (r == 0x00 && g == 0xA8 && b == 0x00) return 0x02; // green
+    if (r == 0xA8 && g == 0x00 && b == 0x00) return 0x04; // red
+    if (r == 0xFF && g == 0xFF && b == 0xFF) return 0x3F; // white
     return 0x00;
 }
 
-void VGA::PutPixel(uint32_t x, uint32_t y, uint8_t r, uint8_t g, uint8_t b)
+void VGA::putPixel(int32_t x, int32_t y, uint8_t r, uint8_t g, uint8_t b)
 {
-    PutPixel(x, y, GetColorIndex(r, g, b));
+    putPixel(x, y, getColorIndex(r, g, b));
+}
+
+void VGA::fillRectangle(uint32_t x, uint32_t y, uint32_t w, uint32_t h, uint8_t r, uint8_t g, uint8_t b)
+{
+    for (int32_t Y = y; Y < y + h; Y++)
+        for (int32_t X = x; X < x + w; X++)
+            putPixel(X, Y, r, g, b);
 }
