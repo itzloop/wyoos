@@ -1,7 +1,8 @@
 #include <hardwarecom/interrupts.h>
 
-using namespace myos::hardwarecoms;
+using namespace myos;
 using namespace myos::common;
+using namespace myos::hardwarecoms;
 
 void printf(char *str);
 void printAddr(void *ptr);
@@ -27,12 +28,14 @@ void InterruptManager::setInterruptDescriptorTableEntry(
     interruptDescriptorTable[interruptNumber].reserved = 0;
 }
 
-InterruptManager::InterruptManager(GDT *gdt)
+InterruptManager::InterruptManager(GDT *gdt, TaskManager *taskManager)
     : picMasterCommand(0x20),
       picMasterData(0x21),
       picSlaveCommand(0xA0),
       picSlaveData(0xA1)
 {
+    this->taskManager = taskManager;
+
     uint16_t codeSegment = gdt->CodeSegmentSelector();
     const uint8_t IDT_INTERRUPT_GATE = 0xE;
 
@@ -105,6 +108,11 @@ uint32_t InterruptManager::doHandleInterrupt(uint8_t int_num, uint32_t esp)
     {
         printf("UNHANDLED INTERRUPT 0x");
         printHex(int_num);
+    }
+
+    if (int_num == 0x20)
+    {
+        esp = (uint32_t)taskManager->schedule((CPUState *)esp);
     }
 
     if (0x20 <= int_num && int_num < 0x30)

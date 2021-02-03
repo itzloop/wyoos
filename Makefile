@@ -8,6 +8,7 @@ OBJS = obj/loader.o \
 		obj/hardwarecom/interrupts.o \
 		obj/hardwarecom/port.o \
 		obj/hardwarecom/pci.o \
+		obj/multitasking.o \
 		obj/drivers/keyboard.o \
 		obj/drivers/mouse.o \
 		obj/drivers/vga.o \

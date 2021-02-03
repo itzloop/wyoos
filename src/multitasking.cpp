@@ -1,0 +1,54 @@
+#include <multitasking.h>
+
+using namespace myos;
+using namespace myos::common;
+
+Task::Task(GDT *gdt, void entrypoint())
+{
+    cpustate = (CPUState *)(stack + 4096 - sizeof(CPUState));
+
+    cpustate->eax = 0;
+    cpustate->ebx = 0;
+    cpustate->ecx = 0;
+    cpustate->edx = 0;
+
+    cpustate->esi = 0;
+    cpustate->edi = 0;
+    cpustate->ebp = 0;
+
+    // cpustate->esp = 0;
+
+    cpustate->eip = (uint32_t)entrypoint;
+    cpustate->cs = gdt->CodeSegmentSelector();
+    // cpustate->ss = 0;
+    cpustate->eflags = 0x202;
+}
+Task::~Task() {}
+
+TaskManager::TaskManager()
+{
+    numTasks = 0;
+    currentTask = -1;
+}
+TaskManager::~TaskManager() {}
+bool TaskManager::addTask(Task *task)
+{
+    if (numTasks >= 250)
+        return false;
+    tasks[numTasks++] = task;
+    return true;
+}
+CPUState *TaskManager::schedule(CPUState *cpustate)
+{
+    if (numTasks <= 0)
+        return cpustate;
+
+    if (currentTask >= 0)
+    {
+        tasks[currentTask]->cpustate = cpustate;
+    }
+    if (++currentTask >= numTasks)
+        currentTask %= numTasks;
+
+    return tasks[currentTask]->cpustate;
+}

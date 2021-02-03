@@ -8,6 +8,7 @@
 #include <drivers/vga.h>
 #include <gui/desktop.h>
 #include <gui/window.h>
+#include <multitasking.h>
 
 using namespace myos;
 using namespace myos::common;
@@ -18,7 +19,7 @@ using namespace myos::hardwarecoms;
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
 
-#define GRAPHICSMODE
+// #define GRAPHICSMODE
 
 void printf(char *str)
 {
@@ -129,6 +130,18 @@ public:
     }
 };
 
+void taskA()
+{
+    while (1)
+        printf("A");
+}
+
+void taskB()
+{
+    while (1)
+        printf("B");
+}
+
 typedef void (*ctor)();
 
 extern "C" ctor start_ctors;
@@ -145,8 +158,14 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
 
     // instantiate the global descriptor table
     GDT gdt;
+    TaskManager taskManager;
+    Task a(&gdt, taskA);
+    Task b(&gdt, taskB);
+    taskManager.addTask(&a);
+    taskManager.addTask(&b);
+
     // instantiate the interrupt descriptor table
-    InterruptManager interrupts(&gdt);
+    InterruptManager interrupts(&gdt, &taskManager);
     DriverManager driverManager;
     Desktop desktop(320, 200, 0x00, 0x00, 0xA8);
 #ifdef GRAPHICSMODE
