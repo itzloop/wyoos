@@ -9,6 +9,7 @@
 #include <gui/desktop.h>
 #include <gui/window.h>
 #include <multitasking.h>
+#include <mmu.h>
 
 using namespace myos;
 using namespace myos::common;
@@ -157,12 +158,29 @@ extern "C" void kernelMain(void *multiboot_structure, uint32_t magicnumber)
     printf("Hello\n");
 
     // instantiate the global descriptor table
+
     GDT gdt;
+    size_t heap = 10 * 1024 * 1024;
+    uint32_t *memupper = (uint32_t *)(((size_t)multiboot_structure) + 8);
+    MMU mmu(heap, (*memupper) * 1024 - heap - 10 * 1024);
+
+    printAddr((void *)heap);
+
+    void *allocated = mmu.malloc(1024);
+    printf("\nallocated: ");
+    printAddr(allocated);
+    mmu.free(allocated);
+    allocated = mmu.malloc(1024);
+    printf("\nallocated: ");
+    printAddr(allocated);
+
+    printf("\n");
+
     TaskManager taskManager;
-    Task a(&gdt, taskA);
-    Task b(&gdt, taskB);
-    taskManager.addTask(&a);
-    taskManager.addTask(&b);
+    // Task a(&gdt, taskA);
+    // Task b(&gdt, taskB);
+    // taskManager.addTask(&a);
+    // taskManager.addTask(&b);
 
     // instantiate the interrupt descriptor table
     InterruptManager interrupts(&gdt, &taskManager);

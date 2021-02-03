@@ -3,6 +3,7 @@ GPPPARAMS = -m32 -Iinclude -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti 
 ASPARAMS = --32
 OBJS = obj/loader.o \
 		obj/gdt.o \
+		obj/mmu.o \
 		obj/drivers/driver.o \
 		obj/hardwarecom/interruptstubs.o \
 		obj/hardwarecom/interrupts.o \
